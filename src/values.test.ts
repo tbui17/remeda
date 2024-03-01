@@ -1,12 +1,44 @@
+import { pipe } from './pipe';
+import { map } from './map';
 import { values } from './values';
 
-describe('Test for values as data first', () => {
-  it('should return values of array', () => {
-    expect(values(['x', 'y', 'z'])).toEqual(['x', 'y', 'z']);
+describe('Runtime', () => {
+  describe('dataFirst', () => {
+    it('works with arrays', () => {
+      expect(values(['x', 'y', 'z'])).toEqual(['x', 'y', 'z']);
+    });
+
+    it('should return values of object', () => {
+      expect(values({ a: 'x', b: 'y', c: 'z' })).toEqual(['x', 'y', 'z']);
+    });
   });
 
-  it('should return values of object', () => {
-    expect(values({ a: 'x', b: 'y', c: 'z' })).toEqual(['x', 'y', 'z']);
+  describe('dataLast', () => {
+    it('works with arrays', () => {
+      expect(values()(['x', 'y', 'z'])).toEqual(['x', 'y', 'z']);
+    });
+
+    it('works with objects', () => {
+      expect(values()({ a: 'x', b: 'y', c: 'z' })).toEqual(['x', 'y', 'z']);
+    });
+
+    it('works with pipes', () => {
+      expect(pipe(['x', 'y', 'z'], values())).toEqual(['x', 'y', 'z']);
+      expect(pipe({ a: 'x', b: 'y', c: 'z' }, values())).toEqual([
+        'x',
+        'y',
+        'z',
+      ]);
+    });
+
+    test('"headless" dataLast', () => {
+      // Older versions of Remeda didn't provide a native dataLast impl and
+      // suggested users use a "headless" version of the dataFirst impl to get the
+      // dataLast behavior.
+      // TODO: Remove this test once we release Remeda v2 where we won't
+      // officially continue to support this.
+      expect(pipe({ a: 'x', b: 'y', c: 'z' }, values)).toEqual(['x', 'y', 'z']);
+    });
   });
 });
 
@@ -45,5 +77,40 @@ describe('typing', () => {
     expectTypeOf(
       values<{ type: 'cat' | 'dog'; age: number }>({ type: 'cat', age: 7 })
     ).toEqualTypeOf<Array<'cat' | 'dog' | number>>();
+  });
+
+  it('should return never with invalid args', () => {
+    expectTypeOf(values(12345)).toBeNever();
+  });
+
+  it('should return generic 1-ary curried function when no args are passed', () => {
+    const data = { a: 3, b: 4, c: 3 };
+    const fn = values();
+    const result = fn(data);
+    expectTypeOf(result).toEqualTypeOf<Array<number>>();
+  });
+
+  it('should infer type with dataLast', () => {
+    const data = { a: 3, b: 4, c: 3 };
+
+    pipe(
+      data,
+      values(),
+      map(numbers => {
+        expectTypeOf(numbers).toEqualTypeOf<number>();
+      })
+    );
+  });
+
+  it('should infer type with "headless" dataLast', () => {
+    const data = { a: 3, b: 4, c: 3 };
+    pipe(
+      data,
+      s => s,
+      values,
+      map(numbers => {
+        expectTypeOf(numbers).toEqualTypeOf<number>();
+      })
+    );
   });
 });
