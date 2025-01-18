@@ -1,7 +1,7 @@
 import type { EmptyObject } from "type-fest";
 import { mergeAll } from "./mergeAll";
 
-describe("array overload", () => {
+describe("arrays", () => {
   it("custom case", () => {
     // based on https://github.com/remeda/remeda/issues/918
     type UserWithPhone = { id: string; phone: number };
@@ -117,7 +117,20 @@ describe("array overload", () => {
   });
 });
 
-describe("tuple overload", () => {
+describe("nonempty arrays", () => {
+  it("the return type should not account for the empty array case", () => {
+    type A = { a: number; b: string };
+    type B = { a: string; b: string };
+    type AB = A | B;
+    const input: [AB, ...ReadonlyArray<AB>] = [{ a: 1, b: "b" }];
+
+    const result = mergeAll(input);
+
+    expectTypeOf(result).toEqualTypeOf<{ a: string | number; b: string }>();
+  });
+});
+
+describe("tuples", () => {
   describe("the fields of the rightmost item should have the greatest priority in overrides", () => {
     it("0 types", () => {
       const input: [] = [];
