@@ -1,5 +1,21 @@
-import type { EmptyObject, SharedUnionFields, Simplify } from "type-fest";
+import type {
+  EmptyObject,
+  Merge,
+  SharedUnionFields,
+  Simplify,
+} from "type-fest";
 import type { DisjointUnionFields } from "./internal/types/DisjointUnionFields";
+import type { IterableContainer } from "./internal/types/IterableContainer";
+
+/**
+ * Merges a tuple of objects types into a single object type from left to right.
+ */
+export type MergeTuple<
+  T extends IterableContainer,
+  Result = object, // no-op for the first iteration in the successive merges, also infers object as type by default if an empty tuple is used
+> = T extends readonly [infer Head, ...infer Rest]
+  ? MergeTuple<Rest, Merge<Result, Head>>
+  : Result;
 
 // In the context of a heterogeneous array, the array may not have objects from every type of the union.
 // This means some fields may be missing in the final object, so we make them optional.
@@ -25,15 +41,9 @@ type MergeAll<T extends object> =
  * @dataFirst
  * @category Array
  */
-export function mergeAll<A>(objects: readonly [A]): A;
-export function mergeAll<A, B>(objects: readonly [A, B]): A & B;
-export function mergeAll<A, B, C>(objects: readonly [A, B, C]): A & B & C;
-export function mergeAll<A, B, C, D>(
-  objects: readonly [A, B, C, D],
-): A & B & C & D;
-export function mergeAll<A, B, C, D, E>(
-  objects: readonly [A, B, C, D, E],
-): A & B & C & D & E;
+export function mergeAll<T extends IterableContainer>(
+  objects: T,
+): MergeTuple<T>;
 export function mergeAll<T extends object>(
   objects: ReadonlyArray<T>,
 ): MergeAll<T>;
