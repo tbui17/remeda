@@ -10,7 +10,7 @@ import type { IterableContainer } from "./internal/types/IterableContainer";
 /**
  * Merges a tuple of objects types into a single object type from left to right.
  */
-export type MergeTuple<
+type MergeTuple<
   T extends IterableContainer,
   Result = object, // no-op for the first iteration in the successive merges, also infers object as type by default if an empty tuple is used
 > = T extends readonly [infer Head, ...infer Rest]
