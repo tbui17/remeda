@@ -65,6 +65,6 @@ export function mergeAll<T extends IterableContainer<object>>(
     out = { ...out, ...item };
   }
 
-  // @ts-expect-error the conditional return type will work out - see the type tests.
+  // @ts-expect-error the return type will work out - see the type tests.
   return out;
 }
