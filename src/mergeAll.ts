@@ -37,6 +37,8 @@ type MergeAll<T extends IterableContainer<object>> =
       : MergeTuple<T>
     : MergeUnion<T[number]> | EmptyObject;
 
+type NonemptyReadonlyArray<T> = readonly [T, ...Array<T>];
+
 /**
  * Merges a list of objects into a single object.
  *
@@ -51,7 +53,7 @@ type MergeAll<T extends IterableContainer<object>> =
  * @category Array
  */
 export function mergeAll<T extends object>(
-  objects: readonly [T, ...ReadonlyArray<T>],
+  objects: NonemptyReadonlyArray<T>,
 ): MergeUnion<T>;
 export function mergeAll<T extends IterableContainer<object>>(
   objects: T,
