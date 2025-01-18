@@ -25,10 +25,8 @@ type MergeTuple<
 // If the array is empty, we know that the loop won't run so we'll just get the empty object.
 // Since we don't know the order of the items in the array, when we merge common fields, we don't know what the final type for the field will be, but we do know that it is one of the many possible types that are available across the members of the union for that field.
 // We represent these possibilities by combining the field's different types across the union members into a union.
-type MergeUnion<T extends object> = MergeUnionNonempty<T> | EmptyObject;
-
-type MergeUnionNonempty<T extends object> = Simplify<
-  Simplify<SharedUnionFields<T> & Partial<DisjointUnionFields<T>>>
+type MergeUnion<T extends object> = Simplify<
+  SharedUnionFields<T> & Partial<DisjointUnionFields<T>>
 >;
 
 type MergeAll<T extends IterableContainer<object>> =
@@ -37,7 +35,7 @@ type MergeAll<T extends IterableContainer<object>> =
     ? T extends readonly []
       ? EmptyObject
       : MergeTuple<T>
-    : MergeUnion<T[number]>;
+    : MergeUnion<T[number]> | EmptyObject;
 
 /**
  * Merges a list of objects into a single object.
@@ -54,7 +52,7 @@ type MergeAll<T extends IterableContainer<object>> =
  */
 export function mergeAll<T extends object>(
   objects: readonly [T, ...ReadonlyArray<T>],
-): MergeUnionNonempty<T>;
+): MergeUnion<T>;
 export function mergeAll<T extends IterableContainer<object>>(
   objects: T,
 ): MergeAll<T>;
