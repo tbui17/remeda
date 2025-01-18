@@ -41,9 +41,19 @@ type MergeAll<T extends object> =
  * @dataFirst
  * @category Array
  */
-export function mergeAll<T extends IterableContainer>(
-  objects: T,
-): MergeTuple<T>;
+export function mergeAll<A>(objects: readonly [A]): MergeTuple<typeof objects>;
+export function mergeAll<A, B>(
+  objects: readonly [A, B],
+): MergeTuple<typeof objects>;
+export function mergeAll<A, B, C>(
+  objects: readonly [A, B, C],
+): MergeTuple<typeof objects>;
+export function mergeAll<A, B, C, D>(
+  objects: readonly [A, B, C, D],
+): MergeTuple<typeof objects>;
+export function mergeAll<A, B, C, D, E>(
+  objects: readonly [A, B, C, D, E],
+): MergeTuple<typeof objects>;
 export function mergeAll<T extends object>(
   objects: ReadonlyArray<T>,
 ): MergeAll<T>;
