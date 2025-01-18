@@ -118,7 +118,7 @@ describe("arrays", () => {
 });
 
 describe("nonempty arrays", () => {
-  it("the return type should not account for the empty array case", () => {
+  it("the return type should not include the possibility of returning a nonempty object given a nonempty array with nonempty objects", () => {
     type A = { a: number; b: string };
     type B = { a: string; b: string };
     type AB = A | B;
