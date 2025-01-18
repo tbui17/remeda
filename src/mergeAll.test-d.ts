@@ -119,6 +119,14 @@ describe("array overload", () => {
 
 describe("tuple overload", () => {
   describe("the fields of the rightmost item should have the greatest priority in overrides", () => {
+    it("0 types", () => {
+      const input: [] = [];
+
+      const result = mergeAll(input);
+
+      expectTypeOf(result).toEqualTypeOf<EmptyObject>();
+    });
+
     it("1 types", () => {
       type A1 = { a: 1; b: 1 };
       const input: [A1] = [{ a: 1, b: 1 }];

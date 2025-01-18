@@ -31,7 +31,11 @@ type MergeUnion<T extends object> =
 
 type MergeAll<T extends IterableContainer<object>> =
   // determine if it's a tuple or array
-  TupleParts<T> extends { item: never } ? MergeTuple<T> : MergeUnion<T[number]>;
+  TupleParts<T> extends { item: never }
+    ? T extends readonly []
+      ? EmptyObject
+      : MergeTuple<T>
+    : MergeUnion<T[number]>;
 
 /**
  * Merges a list of objects into a single object.
