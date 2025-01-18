@@ -9,7 +9,7 @@ import type { IterableContainer } from "./internal/types/IterableContainer";
 import type { TupleParts } from "./internal/types/TupleParts";
 
 /**
- * Merges a tuple of objects types into a single object type from left to right.
+ * Merge a tuple of object types, where props from later objects override earlier props.
  */
 type MergeTuple<
   T extends IterableContainer,
